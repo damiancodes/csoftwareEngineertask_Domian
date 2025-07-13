@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: taskmanager_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: taskmanager
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: taskuser
+      MYSQL_PASSWORD: taskpass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - taskmanager_network
+
+  # Laravel Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: taskmanager_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: taskmanager
+      DB_USERNAME: taskuser
+      DB_PASSWORD: taskpass
+      DB_PORT: 3306
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USERNAME: null
+      MAIL_PASSWORD: null
+      MAIL_ENCRYPTION: null
+      MAIL_FROM_ADDRESS: "noreply@taskmanager.com"
+      MAIL_FROM_NAME: "Task Manager"
+    depends_on:
+      - mysql
+    networks:
+      - taskmanager_network
+    volumes:
+      - ./backend:/var/www/html
+
+  # Frontend (Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: taskmanager_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/var/www/html
+    depends_on:
+      - backend
+    networks:
+      - taskmanager_network
+
+  # MailHog for email testing
+  mailhog:
+    image: mailhog/mailhog
+    container_name: taskmanager_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - taskmanager_network
+
+volumes:
+  mysql_data:
+
+networks:
+  taskmanager_network:
+    driver: bridge 

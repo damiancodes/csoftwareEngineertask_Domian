@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Task Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .error { color: red; }
+        .success { color: green; }
+        button { margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Task Manager Debug Page</h1>
+    
+    <div class="debug-section">
+        <h3>Authentication Status</h3>
+        <div id="authStatus">Loading...</div>
+        <button onclick="checkAuth()">Check Auth</button>
+        <button onclick="clearAuth()">Clear Auth</button>
+        <button onclick="testAPI()">Test API</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Navigation</h3>
+        <button onclick="goToMain()">Go to Main Page</button>
+        <button onclick="goToDashboard()">Go to Dashboard</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Console Logs</h3>
+        <div id="consoleLogs"></div>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <script>
+        // Override console.log to capture logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        
+        function addLog(message, type = 'log') {
+            const logsDiv = document.getElementById('consoleLogs');
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(logEntry);
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLog(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLog(args.join(' '), 'error');
+        };
+        
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('currentUser');
+            const statusDiv = document.getElementById('authStatus');
+            
+            statusDiv.innerHTML = `
+                <p><strong>Token:</strong> ${token ? 'Present' : 'Missing'}</p>
+                <p><strong>User:</strong> ${user ? 'Present' : 'Missing'}</p>
+                <p><strong>Current Path:</strong> ${window.location.pathname}</p>
+                <p><strong>User Agent:</strong> ${navigator.userAgent}</p>
+            `;
+        }
+        
+        function clearAuth() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('currentUser');
+            console.log('Auth cleared');
+            checkAuth();
+        }
+        
+        async function testAPI() {
+            try {
+                console.log('Testing API connection...');
+                const response = await fetch('/api/tasks', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken') || ''}`
+                    }
+                });
+                console.log('API Response status:', response.status);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API Response data:', data);
+                } else {
+                    console.error('API Error:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('API Test failed:', error);
+            }
+        }
+        
+        function goToMain() {
+            window.location.href = '/';
+        }
+        
+        function goToDashboard() {
+            window.location.href = '/dashboard.html';
+        }
+        
+        function clearLogs() {
+            document.getElementById('consoleLogs').innerHTML = '';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Debug page loaded');
+            checkAuth();
+        });
+    </script>
+</body>
+</html> 

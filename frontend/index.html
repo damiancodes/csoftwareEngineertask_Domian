@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Streamline Your Workflow</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-kanban me-2"></i>Task Manager
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light ms-2" onclick="showLoginModal()">Login</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold text-white mb-4">
+                        Streamline Your <span class="text-warning">Workflow</span>
+                    </h1>
+                    <p class="lead text-white-50 mb-4">
+                        Efficiently manage tasks, track progress, and collaborate with your team. 
+                        Our intuitive task management system helps you stay organized and productive.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-warning btn-lg" onclick="showLoginModal()">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Get Started
+                        </button>
+                        <button class="btn btn-outline-light btn-lg" onclick="scrollToFeatures()">
+                            <i class="bi bi-play-circle me-2"></i>Learn More
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <div class="task-card floating">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Design Homepage</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Create modern responsive design</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-warning">In Progress</span>
+                                    <small class="text-muted">Due: Dec 15</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-card floating delay-1">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-clock text-warning me-2"></i>API Documentation</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Write comprehensive docs</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary">Pending</span>
+                                    <small class="text-muted">Due: Dec 20</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="task-card floating delay-2">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Database Optimization</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">Improve query performance</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-success">Completed</span>
+                                    <small class="text-muted">Due: Dec 10</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="display-5 fw-bold mb-3">Powerful Features</h2>
+                    <p class="lead text-muted">Everything you need to manage tasks effectively</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-people-fill text-primary"></i>
+                            </div>
+                            <h5 class="card-title">User Management</h5>
+                            <p class="card-text text-muted">
+                                Administrators can easily add, edit, and manage users with role-based access control.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-kanban text-success"></i>
+                            </div>
+                            <h5 class="card-title">Task Assignment</h5>
+                            <p class="card-text text-muted">
+                                Assign tasks to team members with deadlines and track progress in real-time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon mb-3">
+                                <i class="bi bi-envelope-fill text-warning"></i>
+                            </div>
+                            <h5 class="card-title">Email Notifications</h5>
+                            <p class="card-text text-muted">
+                                Automatic email notifications when tasks are assigned or status changes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h2 class="display-6 fw-bold mb-4">Built for Modern Teams</h2>
+                    <p class="lead text-muted mb-4">
+                        Our task management system is designed with simplicity and efficiency in mind. 
+                        Whether you're a small team or a large organization, our platform scales with your needs.
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Real-time updates</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Role-based access</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Email notifications</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span>Progress tracking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 class="text-primary">100%</h3>
+                            <p class="text-muted">Uptime</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-success">24/7</h3>
+                            <p class="text-muted">Support</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-warning">Secure</h3>
+                            <p class="text-muted">Data Protection</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-info">Fast</h3>
+                            <p class="text-muted">Performance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Welcome Back</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <div class="alert alert-danger d-none" id="loginError"></div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span class="spinner-border spinner-border-sm d-none me-2" id="loginSpinner"></span>
+                            Sign In
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            Demo Credentials:<br>
+                            Admin: admin@taskmanager.com / password<br>
+                            User: john@taskmanager.com / password
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+</html> 
