@@ -415,3 +415,27 @@ body {
 .dropdown-item:hover {
     background-color: rgba(0,0,0,0.05);
 } 
+
+/* Sidebar Logout Button Modern */
+.sidebar-footer .btn {
+    background: linear-gradient(135deg, #ffc107, #ffe082);
+    color: #222;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 0.7rem 1.5rem;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.sidebar-footer .btn:hover, .sidebar-footer .btn:focus {
+    background: linear-gradient(135deg, #e0a800, #ffe082);
+    color: #111;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+/* Sidebar Nav Item Spacing */
+.sidebar-nav .nav-item {
+    margin-bottom: 0.3rem;
+}
+.sidebar-nav .nav-item:last-child {
+    margin-bottom: 0;
+} 

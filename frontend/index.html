@@ -16,92 +16,83 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-cytonn-grey fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="bi bi-kanban me-2"></i>Task Manager
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752420768/moneycynt_ss3gfy.jpg" alt="Cytonn Logo" style="height: 40px; width: 40px; margin-right: 10px; border-radius: 50%; object-fit: cover;">
+                Cytonn Task Manager
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Features</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#features" id="featuresDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Features
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="featuresDropdown">
+                            <li><a class="dropdown-item" href="#features">User Management</a></li>
+                            <li><a class="dropdown-item" href="#features">Task Management</a></li>
+                            <li><a class="dropdown-item" href="#features">Email Notifications</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about">About</a>
                     </li>
-                    <li class="nav-item">
-                        <button class="btn btn-outline-light ms-2" onclick="showLoginModal()">Login</button>
+                    <li class="nav-item dropdown">
+                        <button class="btn btn-cytonn-yellow nav-login-btn ms-2 d-flex align-items-center dropdown-toggle" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false" onclick="showLoginModal()">
+                            <i class="bi bi-person-circle me-1"></i> Login
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="loginDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="showLoginModal()"><i class="bi bi-box-arrow-in-right me-2"></i>Sign In</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center min-vh-100">
-                <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold text-white mb-4">
-                        Streamline Your <span class="text-warning">Workflow</span>
-                    </h1>
-                    <p class="lead text-white-50 mb-4">
-                        Efficiently manage tasks, track progress, and collaborate with your team. 
-                        Our intuitive task management system helps you stay organized and productive.
-                    </p>
-                    <div class="d-flex gap-3">
-                        <button class="btn btn-warning btn-lg" onclick="showLoginModal()">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Get Started
-                        </button>
-                        <button class="btn btn-outline-light btn-lg" onclick="scrollToFeatures()">
-                            <i class="bi bi-play-circle me-2"></i>Learn More
-                        </button>
+    <!-- Hero Section as Carousel -->
+    <section class="hero-section-cytonn p-0">
+        <div id="cytonnHeroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752420949/money4_rx3iqu.jpg" class="d-block w-100 hero-carousel-img" alt="Money 4">
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100">
+                        <h5 class="fw-bold text-warning mb-2" style="font-size:1.5rem;">TAKE CHARGE OF YOUR INVESTMENT</h5>
+                        <h1 class="display-4 fw-bold text-white mb-3 text-center">WITH CYTONN MONEY MARKET FUND</h1>
+                        <p class="lead text-white-50 mb-4 text-center">Task Manager fastens your workflow and helps you manage your investments efficiently with Cytonn.</p>
+                        <button class="btn btn-cytonn-yellow btn-lg" onclick="showLoginModal()">Get Started</button>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="hero-image">
-                        <div class="task-card floating">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Design Homepage</h6>
-                            </div>
-                            <div class="card-body">
-                                <p class="small text-muted">Create modern responsive design</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-warning">In Progress</span>
-                                    <small class="text-muted">Due: Dec 15</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="task-card floating delay-1">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-clock text-warning me-2"></i>API Documentation</h6>
-                            </div>
-                            <div class="card-body">
-                                <p class="small text-muted">Write comprehensive docs</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-secondary">Pending</span>
-                                    <small class="text-muted">Due: Dec 20</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="task-card floating delay-2">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Database Optimization</h6>
-                            </div>
-                            <div class="card-body">
-                                <p class="small text-muted">Improve query performance</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-success">Completed</span>
-                                    <small class="text-muted">Due: Dec 10</small>
-                                </div>
-                            </div>
-                        </div>
+                <div class="carousel-item">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752420767/moneyctyn_zmvbdf.jpg" class="d-block w-100 hero-carousel-img" alt="Money Cytonn">
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100">
+                        <h5 class="fw-bold text-warning mb-2" style="font-size:1.5rem;">BOOST YOUR PRODUCTIVITY</h5>
+                        <h1 class="display-4 fw-bold text-white mb-3 text-center">MANAGE TASKS & INVESTMENTS SEAMLESSLY</h1>
+                        <p class="lead text-white-50 mb-4 text-center">Stay on top of your goals with Cytonn's Task Manager and Money Market Fund.</p>
+                        <button class="btn btn-cytonn-green btn-lg" onclick="showLoginModal()">Get Started</button>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752420768/moneym_n2nxme.jpg" class="d-block w-100 hero-carousel-img" alt="Money M">
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100">
+                        <h5 class="fw-bold text-warning mb-2" style="font-size:1.5rem;">SIMPLIFY YOUR WORKFLOW</h5>
+                        <h1 class="display-4 fw-bold text-white mb-3 text-center">CYTONN TASK MANAGER FOR TEAMS</h1>
+                        <p class="lead text-white-50 mb-4 text-center">Collaborate, assign, and track tasks while growing your investments with Cytonn.</p>
+                        <button class="btn btn-cytonn-green btn-lg" onclick="showLoginModal()">Get Started</button>
                     </div>
                 </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#cytonnHeroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#cytonnHeroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </section>
 
@@ -118,8 +109,8 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="bi bi-people-fill text-primary"></i>
+                            <div class="feature-img mb-3">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752096452/homepage5_qjxatx.jpg" alt="User Management" class="img-fluid rounded-circle feature-circle-img">
                             </div>
                             <h5 class="card-title">User Management</h5>
                             <p class="card-text text-muted">
@@ -131,8 +122,8 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="bi bi-kanban text-success"></i>
+                            <div class="feature-img mb-3">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752511329/taskmanager_tkmz9l.jpg" alt="Task Manager" class="img-fluid rounded-circle feature-circle-img">
                             </div>
                             <h5 class="card-title">Task Assignment</h5>
                             <p class="card-text text-muted">
@@ -144,8 +135,8 @@
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">
-                            <div class="feature-icon mb-3">
-                                <i class="bi bi-envelope-fill text-warning"></i>
+                            <div class="feature-img mb-3">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752511475/task6_l5w7t2.jpg" alt="Email Notifications" class="img-fluid rounded-circle feature-circle-img">
                             </div>
                             <h5 class="card-title">Email Notifications</h5>
                             <p class="card-text text-muted">
@@ -219,41 +210,176 @@
         </div>
     </section>
 
+    <!-- Why Choose Cytonn Task Manager Section -->
+    <section class="why-cytonn-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="text-cytonn-green fw-bold small">WHY CHOOSE CYTONN TASK MANAGER</span>
+                <h2 class="fw-bold mt-2 mb-3">Why settle for ordinary when you can join the extraordinary?</h2>
+            </div>
+            <div class="row align-items-center mb-5 flex-md-row flex-column-reverse">
+                <div class="col-md-5 text-center">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752095557/test4_g61rjh.jpg" alt="Collaboration" class="why-cytonn-img mb-3 mb-md-0">
+                </div>
+                <div class="col-md-7">
+                    <h5 class="fw-bold mb-2"><span class="text-cytonn-green">Seamless Collaboration:</span> Work together, effortlessly</h5>
+                    <p class="mb-0 text-muted">Assign, track, and discuss tasks in real-time. Cytonn Task Manager makes teamwork easy, with instant updates and clear responsibilities for every team member.</p>
+                </div>
+            </div>
+            <div class="row align-items-center mb-5">
+                <div class="col-md-7 order-2 order-md-1">
+                    <h5 class="fw-bold mb-2"><span class="text-cytonn-green">Smart Task Tracking:</span> Stay on top of your goals</h5>
+                    <p class="mb-0 text-muted">Never miss a deadline again. Get automatic reminders, progress tracking, and visual dashboards to keep your projects moving forward—on time, every time.</p>
+                </div>
+                <div class="col-md-5 order-1 order-md-2 text-center">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752512231/taskone_asj8uh.jpg" alt="Task Tracking" class="why-cytonn-img mb-3 mb-md-0">
+                </div>
+            </div>
+            <div class="row align-items-center mb-5 flex-md-row flex-column-reverse">
+                <div class="col-md-5 text-center">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752420767/moneyctyn_zmvbdf.jpg" alt="Secure & Reliable" class="why-cytonn-img mb-3 mb-md-0">
+                </div>
+                <div class="col-md-7">
+                    <h5 class="fw-bold mb-2"><span class="text-cytonn-green">Secure & Reliable:</span> Your data, always protected</h5>
+                    <p class="mb-0 text-muted">With enterprise-grade security, privacy controls, and 24/7 uptime, your information is safe and accessible whenever you need it. Trust Cytonn for peace of mind.</p>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <div class="col-md-7 order-2 order-md-1">
+                    <h5 class="fw-bold mb-2"><span class="text-cytonn-green">Cytonn Advantage:</span> Integrated financial tools</h5>
+                    <p class="mb-0 text-muted">Uniquely integrated with Cytonn’s financial products, manage your tasks and investments in one place. Experience productivity and financial growth, together.</p>
+                </div>
+                <div class="col-md-5 order-1 order-md-2 text-center">
+                    <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752511703/task2_u5cb8s.jpg" alt="Cytonn Advantage" class="why-cytonn-img mb-3 mb-md-0">
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">Welcome Back</h5>
+            <div class="modal-content login-modal-content">
+                <div class="modal-header border-0 bg-white">
+                    <h5 class="modal-title fw-bold">Welcome Back</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body bg-white">
                     <form id="loginForm">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" required>
+                            <input type="email" class="form-control" id="email" required autocomplete="username">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" required>
+                            <input type="password" class="form-control" id="password" required autocomplete="current-password">
                         </div>
                         <div class="alert alert-danger d-none" id="loginError"></div>
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-cytonn-yellow w-100 fw-bold">
                             <span class="spinner-border spinner-border-sm d-none me-2" id="loginSpinner"></span>
                             Sign In
                         </button>
                     </form>
-                    <div class="text-center mt-3">
-                        <small class="text-muted">
-                            Demo Credentials:<br>
-                            Admin: admin@taskmanager.com / password<br>
-                            User: john@taskmanager.com / password
-                        </small>
+                    <div class="demo-credentials-card mt-4 mx-auto">
+                        <div class="text-center mb-2 fw-bold text-cytonn-green">Demo Logins</div>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="demo-cred-row d-flex align-items-center justify-content-between px-3 py-2 rounded">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-person-badge-fill text-cytonn-green"></i>
+                                    <span class="fw-semibold">Admin</span>
+                                </div>
+                                <span class="text-muted small">admin@taskmanager.com</span>
+                                <span class="text-muted small">password</span>
+                            </div>
+                            <div class="demo-cred-row d-flex align-items-center justify-content-between px-3 py-2 rounded">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-person-fill text-cytonn-green"></i>
+                                    <span class="fw-semibold">User</span>
+                                </div>
+                                <span class="text-muted small">john@taskmanager.com</span>
+                                <span class="text-muted small">password</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Cytonn Footer -->
+    <footer class="cytonn-footer mt-5 position-relative">
+        <div class="footer-top py-5 px-3 px-md-5">
+            <div class="container-fluid">
+                <div class="row gy-4 justify-content-center text-center">
+                    <div class="col-md-3 col-12 mb-4 mb-md-0">
+                        <h6 class="text-cytonn-green fw-bold mb-2">TALK TO US</h6>
+                        <div class="footer-contact mb-3">
+                            <div>Kenya</div>
+                            <div class="small">P.O Box 20695 - 00200, Nairobi, Kenya</div>
+                            <div class="mt-2">Customer Care</div>
+                            <div class="small">Cell +254(0) 709 101 200</div>
+                            <div class="small">WhatsApp +254(0) 741 676 635</div>
+                            <div class="small">Email: clientservices@cytonn.com</div>
+                            <div class="mt-2">General Inquiries</div>
+                            <div class="small">+254(0) 709 101 200</div>
+                            <div class="mt-2">United States</div>
+                            <div class="small">+254(0) 709 101 200</div>
+                        </div>
+                        <span class="fw-bold text-cytonn-green">OUR DIGITAL PLATFORMS</span>
+                        <div class="d-flex gap-2 justify-content-start mt-2">
+                            <a href="#" class="footer-social-icon p-0" style="background: none; border-radius: 0; box-shadow: none; width: auto; height: auto;">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752515038/fb_lhyl7j.png" alt="Facebook" style="width:32px;height:32px;object-fit:contain;">
+                            </a>
+                            <a href="#" class="footer-social-icon p-0" style="background: none; border-radius: 0; box-shadow: none; width: auto; height: auto;">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752515053/linkedin_yhx5sn.png" alt="LinkedIn" style="width:32px;height:32px;object-fit:contain;">
+                            </a>
+                            <a href="#" class="footer-social-icon p-0" style="background: none; border-radius: 0; box-shadow: none; width: auto; height: auto;">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752515068/gogle_s2pgt6.png" alt="Google" style="width:32px;height:32px;object-fit:contain;">
+                            </a>
+                            <a href="#" class="footer-social-icon p-0" style="background: none; border-radius: 0; box-shadow: none; width: auto; height: auto;">
+                                <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752515026/youtube_esmdan.png" alt="YouTube" style="width:32px;height:32px;object-fit:contain;">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12 mb-4 mb-md-0">
+                        <h6 class="text-cytonn-green fw-bold mb-2">KENYA</h6>
+                        <div class="small">8th Floor, Pinetree Plaza, Kaburu Drive, Ngong' Road, Nairobi, Kenya</div>
+                        <h6 class="text-cytonn-green fw-bold mt-4 mb-2">USA</h6>
+                        <div class="small">Suite 1150, 1775 Eye Street NW, USA, Washington DC 20006, USA</div>
+                    </div>
+                    <div class="col-md-2 col-6 mb-4 mb-md-0">
+                        <h6 class="text-cytonn-green fw-bold mb-2">ASSET MANAGERS</h6>
+                        <div class="small">Money Market Fund</div>
+                        <div class="small">Pensions</div>
+                        <h6 class="text-cytonn-green fw-bold mt-4 mb-2">CAPITAL PARTNERS</h6>
+                        <div class="small">Private Equity</div>
+                        <div class="small">Structured Products</div>
+                        <div class="small">Affordable Housing Investment Plan</div>
+                    </div>
+                    <div class="col-md-2 col-6 mb-4 mb-md-0">
+                        <h6 class="text-cytonn-green fw-bold mb-2">REAL ESTATE</h6>
+                        <div class="small">Applewood</div>
+                        <div class="small">RiverRun Estates</div>
+                        <div class="small">The Ridge</div>
+                        <div class="small">Taraji Heights</div>
+                        <div class="small">The Alma</div>
+                    </div>
+                </div>
+            </div>
+            <img src="https://res.cloudinary.com/duxu1eink/image/upload/v1752420768/moneycynt_ss3gfy.jpg" alt="Cytonn Logo" class="footer-logo-bottom">
+        </div>
+        <div class="footer-bottom py-3">
+            <div class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="footer-links mb-2 mb-md-0 text-center text-md-start">
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Terms of Use</a>
+                    <a href="#" class="footer-link">FAQs</a>
+                    <a href="#" class="footer-link">Whistle Blower</a>
+                    <a href="#" class="footer-link">Client Referrals</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
