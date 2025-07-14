@@ -72,17 +72,13 @@ if (typeof window.appLoaded === 'undefined') {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             },
             credentials: 'include',
             ...options
         };
 
-        // Add CSRF token from cookie if present
-        const xsrfToken = getCookie('XSRF-TOKEN');
-        if (xsrfToken) {
-            config.headers['X-XSRF-TOKEN'] = decodeURIComponent(xsrfToken);
-        }
-
+        // Add auth token if available
         const token = localStorage.getItem('authToken');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
@@ -90,11 +86,23 @@ if (typeof window.appLoaded === 'undefined') {
 
         try {
             console.log('Making API request to:', url);
-            const response = await fetch(url, config);
+            let response = await fetch(url, config);
             
             console.log('API response status:', response.status);
             
-           
+            if (response.status === 419) {
+                console.log('CSRF token mismatch, trying to refresh...');
+                // Try to get fresh CSRF token
+                await fetch('/sanctum/csrf-cookie', { 
+                    credentials: 'include',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                // Retry the original request
+                response = await fetch(url, config);
+            }
+            
             if (response.status === 401 || response.status === 403) {
                 console.log('Authentication failed, clearing auth data');
                 localStorage.removeItem('authToken');
@@ -103,7 +111,6 @@ if (typeof window.appLoaded === 'undefined') {
                 currentUser = null;
                 window.currentUser = null;
                 
-                // Only redirect if not already on login page
                 if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
                     window.location.href = '/';
                 }
@@ -129,7 +136,6 @@ if (typeof window.appLoaded === 'undefined') {
         } catch (error) {
             console.error('API Error:', error);
             
-          
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                 throw new Error('Network error - please check your connection and ensure the server is running');
             }
@@ -144,11 +150,12 @@ if (typeof window.appLoaded === 'undefined') {
             console.log('Attempting login for:', email);
             
             // Fetch CSRF cookie first
-            try {
-                await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
-            } catch (error) {
-                console.warn('CSRF cookie fetch failed:', error);
-            }
+            await fetch('/sanctum/csrf-cookie', { 
+                credentials: 'include',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
 
             const data = await apiRequest('/login', {
                 method: 'POST',
