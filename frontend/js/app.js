@@ -193,6 +193,7 @@ if (typeof window.appLoaded === 'undefined') {
             window.currentUser = null;
             localStorage.removeItem('authToken');
             localStorage.removeItem('currentUser');
+            await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
             window.location.href = '/';
         }
     }
