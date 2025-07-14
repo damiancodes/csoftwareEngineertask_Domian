@@ -7,12 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
-    /**
-     * Login user
-     */
+   
     public function login(Request $request)
     {
         $request->validate([
@@ -36,9 +35,7 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Logout user
-     */
+   
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -48,17 +45,13 @@ class AuthController extends Controller
         ]);
     }
 
-    /**
-     * Get authenticated user
-     */
+  
     public function user(Request $request)
     {
         return response()->json($request->user());
     }
 
-    /**
-     * Register new user (admin only)
-     */
+  
     public function register(Request $request)
     {
         if (!$request->user()->isAdmin()) {
@@ -68,7 +61,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:6|confirmed',
             'role' => 'required|in:admin,user',
         ]);
 
@@ -84,4 +77,86 @@ class AuthController extends Controller
             'message' => 'User created successfully'
         ], 201);
     }
-} 
+
+  
+    public function showUser(Request $request, User $user)
+    {
+        $currentUser = $request->user();
+        
+ 
+        if (!$currentUser->isAdmin() && $currentUser->id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        return response()->json($user);
+    }
+
+  
+  
+    public function updateUser(Request $request, User $user)
+    {
+        $currentUser = $request->user();
+        
+       
+        if (!$currentUser->isAdmin() && $currentUser->id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $rules = [
+            'name' => 'sometimes|required|string|max:255',
+            'email' => [
+                'sometimes',
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($user->id),
+            ],
+        ];
+
+     
+        if ($currentUser->isAdmin()) {
+            $rules['role'] = 'sometimes|required|in:user,admin';
+        }
+
+      
+        if ($request->has('password')) {
+            $rules['password'] = 'required|string|min:6|confirmed';
+        }
+
+        $validatedData = $request->validate($rules);
+
+        if (isset($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        }
+
+        $user->update($validatedData);
+
+        return response()->json([
+            'user' => $user->fresh(),
+            'message' => 'User updated successfully'
+        ]);
+    }
+
+   
+    public function deleteUser(Request $request, User $user)
+    {
+        $currentUser = $request->user();
+        
+     
+        if (!$currentUser->isAdmin()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+     
+        if ($currentUser->id === $user->id) {
+            return response()->json(['message' => 'You cannot delete your own account'], 400);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'User deleted successfully'
+        ]);
+    }
+}
