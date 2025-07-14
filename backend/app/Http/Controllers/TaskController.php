@@ -121,9 +121,7 @@ class TaskController extends Controller
         ]);
     }
 
-    /**
-     * Delete task (admin only)
-     */
+   
     public function destroy(Request $request, Task $task)
     {
         if (!$request->user()->isAdmin()) {
@@ -137,9 +135,7 @@ class TaskController extends Controller
         ]);
     }
 
-    /**
-     * Get all users (admin only)
-     */
+   
     public function getUsers(Request $request)
     {
         if (!$request->user()->isAdmin()) {
