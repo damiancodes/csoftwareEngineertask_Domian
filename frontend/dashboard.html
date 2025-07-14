@@ -176,24 +176,79 @@
                         </button>
                     </div>
                     
+                    <!-- Search and Filter Controls for Tasks Section -->
+                    <div class="row mb-3" id="taskControls">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Search tasks..." id="taskSearchInput" oninput="searchTasks(this.value)">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="statusFilter" onchange="filterTasksByStatus(this.value)">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-success btn-sm" onclick="exportTasks()">
+                                <i class="bi bi-download me-2"></i>Export CSV
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="refreshTasks()">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <!-- Bulk Actions Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-gear me-2"></i>Bulk Actions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="toggleAllTaskCheckboxes(true)">
+                                        <i class="bi bi-check-all me-2"></i>Select All
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="toggleAllTaskCheckboxes(false)">
+                                        <i class="bi bi-square me-2"></i>Deselect All
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkUpdateTaskStatus()">
+                                        <i class="bi bi-arrow-repeat me-2"></i>Update Status
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="bulkDeleteTasks()">
+                                        <i class="bi bi-trash me-2"></i>Delete Selected
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
+                                    <!-- Enhanced Tasks Table Header -->
                                     <div class="table-responsive">
                                         <table class="table table-hover">
                                             <thead>
                                                 <tr>
+                                                    <th width="40">
+                                                        <input type="checkbox" class="form-check-input" onchange="toggleAllTaskCheckboxes(this.checked)">
+                                                    </th>
                                                     <th>Title</th>
                                                     <th>Assigned To</th>
                                                     <th>Status</th>
                                                     <th>Deadline</th>
-                                                    <th>Actions</th>
+                                                    <th width="120">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="tasksTableBody">
                                                 <tr>
-                                                    <td colspan="5" class="text-center py-4">
+                                                    <td colspan="6" class="text-center py-4">
                                                         <div class="spinner-border text-primary" role="status">
                                                             <span class="visually-hidden">Loading...</span>
                                                         </div>
@@ -217,6 +272,38 @@
                         <button class="btn btn-primary" onclick="showCreateUserModal()">
                             <i class="bi bi-plus me-2"></i>New User
                         </button>
+                    </div>
+                    
+                    <!-- Search and Filter Controls for Users Section -->
+                    <div class="row mb-3" id="userControls">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Search users..." id="userSearchInput" oninput="searchUsers(this.value)">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="roleFilter" onchange="filterUsersByRole(this.value)">
+                                <option value="all">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-success btn-sm" onclick="exportUsers()">
+                                <i class="bi bi-download me-2"></i>Export CSV
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="refreshUsers()">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-info btn-sm" onclick="showUserStatistics()">
+                                <i class="bi bi-graph-up me-2"></i>Statistics
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="row">
@@ -374,6 +461,273 @@
                             Create User
                         </button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaskForm">
+                        <div class="mb-3">
+                            <label for="editTaskTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="editTaskTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTaskDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="editTaskDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTaskStatus" class="form-label">Status</label>
+                            <select class="form-control" id="editTaskStatus" required>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTaskAssignee" class="form-label">Assign To</label>
+                            <select class="form-control" id="editTaskAssignee" required>
+                                <option value="">Select User</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editTaskDeadline" class="form-label">Deadline</label>
+                            <input type="date" class="form-control" id="editTaskDeadline" required>
+                        </div>
+                        <div class="alert alert-danger d-none" id="editTaskError"></div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span class="spinner-border spinner-border-sm d-none me-2" id="editTaskSpinner"></span>
+                            Update Task
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <div class="mb-3">
+                            <label for="editUserName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="editUserName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editUserEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserRole" class="form-label">Role</label>
+                            <select class="form-control" id="editUserRole" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserPassword" class="form-label">New Password (leave blank to keep current)</label>
+                            <input type="password" class="form-control" id="editUserPassword">
+                            <small class="form-text text-muted">Only fill this if you want to change the password</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserPasswordConfirm" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="editUserPasswordConfirm">
+                        </div>
+                        <div class="alert alert-danger d-none" id="editUserError"></div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span class="spinner-border spinner-border-sm d-none me-2" id="editUserSpinner"></span>
+                            Update User
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Status Update Modal (Optional) -->
+    <div class="modal fade" id="statusUpdateModal" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-warning" onclick="updateTaskStatusQuick('pending')">
+                            <i class="bi bi-clock me-2"></i>Pending
+                        </button>
+                        <button class="btn btn-info" onclick="updateTaskStatusQuick('in_progress')">
+                            <i class="bi bi-arrow-repeat me-2"></i>In Progress
+                        </button>
+                        <button class="btn btn-success" onclick="updateTaskStatusQuick('completed')">
+                            <i class="bi bi-check-circle me-2"></i>Completed
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div class="modal fade" id="taskDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Task Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning d-none" id="taskDetailOverdue">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Overdue!</strong> This task is past its deadline.
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4 id="taskDetailTitle" class="mb-3"></h4>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Description</label>
+                                <p id="taskDetailDescription" class="form-control-plaintext border rounded p-2 bg-light"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Task Information</h6>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Status</small>
+                                        <div id="taskDetailStatus"></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Assigned To</small>
+                                        <div id="taskDetailAssignee" class="fw-bold"></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Deadline</small>
+                                        <div id="taskDetailDeadline" class="fw-bold"></div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">Created</small>
+                                        <div id="taskDetailCreated"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="editTaskFromDetails()" id="editTaskFromDetailsBtn">
+                        <i class="bi bi-pencil me-2"></i>Edit Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Range Filter Modal -->
+    <div class="modal fade" id="dateFilterModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filter by Date Range</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="startDateFilter" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDateFilter">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="endDateFilter" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDateFilter">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="filterTasksByDateRange()">Apply Filter</button>
+                    <button type="button" class="btn btn-outline-warning" onclick="clearDateFilter()">Clear Filter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div class="modal fade" id="statisticsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Task Statistics</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h2 id="statTotal">0</h2>
+                                    <p class="mb-0">Total Tasks</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h2 id="statPending">0</h2>
+                                    <p class="mb-0">Pending</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h2 id="statInProgress">0</h2>
+                                    <p class="mb-0">In Progress</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h2 id="statCompleted">0</h2>
+                                    <p class="mb-0">Completed</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Completion Rate</h5>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" id="completionProgress" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Overdue Tasks</h5>
+                            <h3 class="text-danger" id="statOverdue">0</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
