@@ -14,9 +14,6 @@ class TaskAssigned extends Notification implements ShouldQueue
 
     public $task;
 
-    /**
-     * Create a new notification instance.
-     */
     public function __construct(Task $task)
     {
         $this->task = $task;
@@ -32,9 +29,6 @@ class TaskAssigned extends Notification implements ShouldQueue
         return ['mail'];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)

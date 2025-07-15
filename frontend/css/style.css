@@ -607,6 +607,26 @@ html {
     }
 } 
 
+/* Modern Team Section Image (Built for Modern Teams) */
+.modern-team-img {
+    width: 370px;
+    height: 370px;
+    object-fit: cover;
+    border-radius: 28% 72% 60% 40% / 40% 60% 72% 28%;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    background: #f8f9fa;
+    transition: box-shadow 0.2s;
+}
+.modern-team-img:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+@media (max-width: 768px) {
+    .modern-team-img {
+        width: 220px;
+        height: 220px;
+    }
+}
+
 /* Navbar Login Button & Dropdown Styles */
 .nav-login-btn {
     font-weight: 600;
@@ -805,4 +825,86 @@ html {
     background: none;
     border-radius: 0;
     box-shadow: none;
+} 
+
+#testimonialCarousel .carousel-indicators [data-bs-target] {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    margin: 0 4px;
+    border: none;
+    opacity: 1;
+    transition: background 0.2s;
+}
+#testimonialCarousel .carousel-indicators .active {
+    background-color: #00995b;
+} 
+
+.compact-testimonial-card {
+    padding: 1.1rem !important;
+    font-size: 0.97rem;
+    max-width: 420px;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+.compact-testimonial-card h6 {
+    font-size: 1.08rem;
+    margin-bottom: 0.5rem;
+}
+.compact-testimonial-card p {
+    font-size: 0.97rem;
+    margin-bottom: 0.5rem;
+}
+@media (max-width: 768px) {
+    .compact-testimonial-card {
+        padding: 0.7rem !important;
+        font-size: 0.93rem;
+        max-width: 100%;
+    }
+    .compact-testimonial-card h6 {
+        font-size: 1rem;
+    }
+} 
+
+.info-cards-row {
+    border-radius: 0.5rem;
+    box-shadow: none;
+}
+.info-card-col {
+    min-height: 260px;
+    background: #fff;
+}
+.info-card-col h5 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.7rem;
+}
+.info-card-underline {
+    width: 120px;
+    height: 3px;
+    background: #222;
+    border-radius: 2px;
+    margin-bottom: 0.7rem;
+}
+.border-md-x {
+    border-left: 1px solid #e5e5e5;
+    border-right: 1px solid #e5e5e5;
+}
+@media (max-width: 991.98px) {
+    .border-md-x {
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid #e5e5e5;
+        border-bottom: 1px solid #e5e5e5;
+    }
+    .info-card-col {
+        min-height: unset;
+    }
+}
+.info-card-col p {
+    font-size: 1.01rem;
+    line-height: 1.6;
+    margin-bottom: 0;
 } 

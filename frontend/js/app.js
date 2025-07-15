@@ -87,22 +87,8 @@ if (typeof window.appLoaded === 'undefined') {
         try {
             console.log('Making API request to:', url);
             let response = await fetch(url, config);
-            
             console.log('API response status:', response.status);
-            
-            if (response.status === 419) {
-                console.log('CSRF token mismatch, trying to refresh...');
-                // Try to get fresh CSRF token
-                await fetch('/sanctum/csrf-cookie', { 
-                    credentials: 'include',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                // Retry the original request
-                response = await fetch(url, config);
-            }
-            
+
             if (response.status === 401 || response.status === 403) {
                 console.log('Authentication failed, clearing auth data');
                 localStorage.removeItem('authToken');
@@ -110,13 +96,12 @@ if (typeof window.appLoaded === 'undefined') {
                 authToken = null;
                 currentUser = null;
                 window.currentUser = null;
-                
                 if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
                     window.location.href = '/';
                 }
                 throw new Error('Authentication failed');
             }
-            
+
             let data;
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
@@ -124,7 +109,7 @@ if (typeof window.appLoaded === 'undefined') {
             } else {
                 data = await response.text();
             }
-            
+
             console.log('API response data:', data);
 
             if (!response.ok) {
@@ -135,11 +120,9 @@ if (typeof window.appLoaded === 'undefined') {
             return data;
         } catch (error) {
             console.error('API Error:', error);
-            
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                 throw new Error('Network error - please check your connection and ensure the server is running');
             }
-            
             throw error;
         }
     }
@@ -148,32 +131,19 @@ if (typeof window.appLoaded === 'undefined') {
     async function login(email, password) {
         try {
             console.log('Attempting login for:', email);
-            
-            // Fetch CSRF cookie first
-            await fetch('/sanctum/csrf-cookie', { 
-                credentials: 'include',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
             const data = await apiRequest('/login', {
                 method: 'POST',
                 body: JSON.stringify({ email, password })
             });
-
             if (!data) {
                 throw new Error('Login failed - no response from server');
             }
-
             console.log('Login successful:', data);
-            
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('currentUser', JSON.stringify(data.user));
             authToken = data.token;
             currentUser = data.user;
             window.currentUser = data.user;
-
             return data;
         } catch (error) {
             console.error('Login error:', error);
