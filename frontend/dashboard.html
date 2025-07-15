@@ -466,7 +466,7 @@
         </div>
     </div>
 
-    <!-- Edit Task Modal -->
+    <!-- Edit Task Modal - Fixed for User vs Admin -->
     <div class="modal fade" id="editTaskModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -492,15 +492,21 @@
                                 <option value="completed">Completed</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <!-- Admin-only fields -->
+                        <div class="mb-3 admin-only-field" style="display: none;">
                             <label for="editTaskAssignee" class="form-label">Assign To</label>
-                            <select class="form-control" id="editTaskAssignee" required>
+                            <select class="form-control" id="editTaskAssignee">
                                 <option value="">Select User</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3 admin-only-field" style="display: none;">
                             <label for="editTaskDeadline" class="form-label">Deadline</label>
-                            <input type="date" class="form-control" id="editTaskDeadline" required>
+                            <input type="date" class="form-control" id="editTaskDeadline">
+                        </div>
+                        <!-- User view - show deadline as read-only -->
+                        <div class="mb-3 user-only-field" style="display: none;">
+                            <label for="editTaskDeadlineReadonly" class="form-label">Deadline</label>
+                            <input type="text" class="form-control" id="editTaskDeadlineReadonly" readonly>
                         </div>
                         <div class="alert alert-danger d-none" id="editTaskError"></div>
                         <button type="submit" class="btn btn-primary w-100">

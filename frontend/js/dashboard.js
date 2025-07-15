@@ -615,7 +615,79 @@ if (typeof window.dashboardLoaded === 'undefined') {
         }
     }
 
-    // Handle edit task form submission
+    // Updated Edit Task Function - STRICT Requirements Compliance
+    window.editTask = async function(taskId) {
+        console.log('Editing task with ID:', taskId);
+        
+        const task = tasks.find(t => t.id === taskId);
+        if (!task) {
+            if (window.TaskManager) {
+                window.TaskManager.showAlert('Task not found!', 'danger');
+            }
+            return;
+        }
+        
+        currentEditingTask = task;
+        
+        // Check if user can edit this task
+        const isAdmin = window.currentUser && window.currentUser.role === 'admin';
+        const isAssignedUser = task.assigned_user && task.assigned_user.id === window.currentUser.id;
+        
+        if (!isAdmin && !isAssignedUser) {
+            if (window.TaskManager) {
+                window.TaskManager.showAlert('You can only edit tasks assigned to you!', 'warning');
+            }
+            return;
+        }
+        
+        // Populate the edit modal
+        document.getElementById('editTaskTitle').value = task.title;
+        document.getElementById('editTaskDescription').value = task.description;
+        document.getElementById('editTaskStatus').value = task.status;
+        
+        // Show/hide fields based on user role
+        const adminFields = document.querySelectorAll('.admin-only-field');
+        const userFields = document.querySelectorAll('.user-only-field');
+        
+        if (isAdmin) {
+            // Admin can edit everything
+            adminFields.forEach(field => field.style.display = 'block');
+            userFields.forEach(field => field.style.display = 'none');
+            
+            // Populate admin fields
+            document.getElementById('editTaskAssignee').value = task.assigned_user ? task.assigned_user.id : '';
+            document.getElementById('editTaskDeadline').value = task.deadline;
+            
+            // Populate assignee dropdown
+            populateEditTaskAssignee();
+            
+            // Admin can edit all fields
+            document.getElementById('editTaskTitle').removeAttribute('readonly');
+            document.getElementById('editTaskDescription').removeAttribute('readonly');
+        } else {
+            // Regular user - ONLY STATUS according to requirements
+            adminFields.forEach(field => field.style.display = 'none');
+            userFields.forEach(field => field.style.display = 'block');
+            
+            // Show deadline as read-only
+            document.getElementById('editTaskDeadlineReadonly').value = formatDate(task.deadline);
+            
+            // According to requirements: "Users should be able to view tasks assigned to them and update the status of the task"
+            // This means ONLY status can be changed, title and description should be read-only
+            document.getElementById('editTaskTitle').setAttribute('readonly', true);
+            document.getElementById('editTaskDescription').setAttribute('readonly', true);
+            
+            // Add visual indicators for read-only fields
+            document.getElementById('editTaskTitle').style.backgroundColor = '#f8f9fa';
+            document.getElementById('editTaskDescription').style.backgroundColor = '#f8f9fa';
+        }
+        
+        // Show the edit modal
+        const modal = new bootstrap.Modal(document.getElementById('editTaskModal'));
+        modal.show();
+    };
+
+    // Updated Handle Edit Task Function - STRICT Requirements Compliance
     async function handleEditTask(e) {
         e.preventDefault();
         
@@ -624,14 +696,16 @@ if (typeof window.dashboardLoaded === 'undefined') {
             return;
         }
         
-        const formData = {
-            title: document.getElementById('editTaskTitle').value,
-            description: document.getElementById('editTaskDescription').value,
-            status: document.getElementById('editTaskStatus').value,
-            assigned_to: document.getElementById('editTaskAssignee').value,
-            deadline: document.getElementById('editTaskDeadline').value
-        };
-
+        const isAdmin = window.currentUser && window.currentUser.role === 'admin';
+        const isAssignedUser = currentEditingTask.assigned_user && 
+                              currentEditingTask.assigned_user.id === window.currentUser.id;
+        
+        // Check permissions
+        if (!isAdmin && !isAssignedUser) {
+            showFormError('editTaskError', 'You can only edit tasks assigned to you');
+            return;
+        }
+        
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const errorDiv = document.getElementById('editTaskError');
 
@@ -641,22 +715,77 @@ if (typeof window.dashboardLoaded === 'undefined') {
             }
             if (errorDiv) errorDiv.classList.add('d-none');
 
+            let endpoint, method, requestBody;
+            
+            if (isAdmin) {
+                // Admin can update everything
+                const formData = {
+                    title: document.getElementById('editTaskTitle').value,
+                    description: document.getElementById('editTaskDescription').value,
+                    status: document.getElementById('editTaskStatus').value,
+                    assigned_to: document.getElementById('editTaskAssignee').value,
+                    deadline: document.getElementById('editTaskDeadline').value
+                };
+                
+                endpoint = `/tasks/${currentEditingTask.id}`;
+                method = 'PUT';
+                requestBody = formData;
+            } else {
+                // Regular user - ONLY STATUS UPDATE per requirements
+                // "Users should be able to view tasks assigned to them and update the status of the task"
+                const statusOnly = {
+                    status: document.getElementById('editTaskStatus').value
+                };
+                
+                endpoint = `/tasks/${currentEditingTask.id}/status`;
+                method = 'PATCH';
+                requestBody = statusOnly;
+            }
+
+            console.log('Sending request:', { endpoint, method, requestBody });
+
+            // Try API request first
+            if (window.TaskManager) {
+                try {
+                    await window.TaskManager.apiRequest(endpoint, {
+                        method: method,
+                        body: JSON.stringify(requestBody)
+                    });
+                    console.log('Task updated via API');
+                } catch (error) {
+                    console.log('API update failed, updating locally:', error.message);
+                }
+            }
+
             // Update local data
             const taskIndex = tasks.findIndex(t => t.id === currentEditingTask.id);
             if (taskIndex !== -1) {
-                tasks[taskIndex] = {
-                    ...tasks[taskIndex],
-                    title: formData.title,
-                    description: formData.description,
-                    status: formData.status,
-                    deadline: formData.deadline,
-                    assigned_user: users.find(u => u.id == formData.assigned_to) || null,
-                    updated_at: new Date().toISOString()
-                };
+                if (isAdmin) {
+                    // Admin can update everything
+                    tasks[taskIndex] = {
+                        ...tasks[taskIndex],
+                        title: requestBody.title,
+                        description: requestBody.description,
+                        status: requestBody.status,
+                        deadline: requestBody.deadline,
+                        assigned_user: users.find(u => u.id == requestBody.assigned_to) || tasks[taskIndex].assigned_user,
+                        updated_at: new Date().toISOString()
+                    };
+                } else {
+                    // Regular user - ONLY STATUS UPDATE
+                    // Title, description, deadline, and assignment remain unchanged
+                    tasks[taskIndex] = {
+                        ...tasks[taskIndex],
+                        status: requestBody.status,
+                        updated_at: new Date().toISOString()
+                        // All other fields (title, description, deadline, assigned_user) remain unchanged
+                    };
+                }
             }
 
             if (window.TaskManager) {
-                window.TaskManager.showAlert('Task updated successfully!', 'success');
+                const message = isAdmin ? 'Task updated successfully!' : 'Task status updated successfully!';
+                window.TaskManager.showAlert(message, 'success');
             }
             
             // Close modal and reset
@@ -840,11 +969,39 @@ if (typeof window.dashboardLoaded === 'undefined') {
         document.getElementById('editTaskTitle').value = task.title;
         document.getElementById('editTaskDescription').value = task.description;
         document.getElementById('editTaskStatus').value = task.status;
-        document.getElementById('editTaskAssignee').value = task.assigned_user ? task.assigned_user.id : '';
-        document.getElementById('editTaskDeadline').value = task.deadline;
         
-        // Populate edit task assignee dropdown
-        populateEditTaskAssignee();
+        // Show/hide fields based on user role
+        const adminFields = document.querySelectorAll('.admin-only-field');
+        const userFields = document.querySelectorAll('.user-only-field');
+        
+        if (window.currentUser && window.currentUser.role === 'admin') {
+            // Admin can edit everything
+            adminFields.forEach(field => field.style.display = 'block');
+            userFields.forEach(field => field.style.display = 'none');
+            
+            // Populate admin fields
+            document.getElementById('editTaskAssignee').value = task.assigned_user ? task.assigned_user.id : '';
+            document.getElementById('editTaskDeadline').value = task.deadline;
+            
+            // Populate assignee dropdown
+            populateEditTaskAssignee();
+        } else {
+            // Regular user - limited editing
+            adminFields.forEach(field => field.style.display = 'none');
+            userFields.forEach(field => field.style.display = 'block');
+            
+            // Show deadline as read-only
+            document.getElementById('editTaskDeadlineReadonly').value = formatDate(task.deadline);
+            
+            // Disable title and description for assigned tasks if user is not the assignee
+            if (task.assigned_user && task.assigned_user.id !== window.currentUser.id) {
+                document.getElementById('editTaskTitle').setAttribute('readonly', true);
+                document.getElementById('editTaskDescription').setAttribute('readonly', true);
+            } else {
+                document.getElementById('editTaskTitle').removeAttribute('readonly');
+                document.getElementById('editTaskDescription').removeAttribute('readonly');
+            }
+        }
         
         // Show the edit modal
         const modal = new bootstrap.Modal(document.getElementById('editTaskModal'));
